@@ -65,4 +65,25 @@ class TaskModelTest extends TestCase
             'is_done' => false,
         ]);
     }
+
+    public function test_fillable_mass_assignment_allows_expected_and_blocks_others(): void
+    {
+        $user = User::factory()->create();
+
+        //許可フィールド
+        $task = Task::create([
+            'user_id' => $user->id,
+            'title'   => 'write tests',
+            'is_done' => false,
+        ]);
+
+        $this->assertDatabaseHas('tasks',[
+            'id'      => $task->id,
+            'user_id' => $user->id,
+            'title'   => 'write tests',
+            'is_done' => false,
+        ]);
+
+
+    }
 }
