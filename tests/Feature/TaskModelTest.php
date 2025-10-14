@@ -37,4 +37,33 @@ class TaskModelTest extends TestCase
         $task->refresh();
         $this->assertFalse($task->is_done);
     }
+
+    public function test_task_user(): void
+    {
+        $task = Task::factory()->create();
+
+        // どちらでもOK（両方書くなら2アサーション）
+        $this->assertNotNull($task->user);
+        $this->assertTrue($task->user()->exists());
+    }
+
+
+    /** @test */
+    public function fillable_で一括代入できる(): void
+    {
+        $user = User::factory()->create();
+
+        $task = Task::create([
+            'user_id' => $user->id,
+            'title'   => 'write tests',
+            'is_done' => false,
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'id'      => $task->id,
+            'user_id' => $user->id,
+            'title'   => 'write tests',
+            'is_done' => false,
+        ]);
+    }
 }
