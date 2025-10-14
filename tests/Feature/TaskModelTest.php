@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Task;
@@ -24,7 +25,8 @@ class TaskModelTest extends TestCase
         $this->assertSame('テ. ス. ト', $task->title);
     }
 
-    public function is_done_boole():void{
+    public function test_is_done_boole():void{
+
         $task = Task::factory()->create(['is_done'=>'1']);
 
         $this->assertIsBool($task->is_done);
