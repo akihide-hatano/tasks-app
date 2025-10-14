@@ -70,13 +70,12 @@ class TaskModelTest extends TestCase
     {
         $user = User::factory()->create();
 
-        //許可フィールド
+        //許可フィールド(OK)
         $task = Task::create([
             'user_id' => $user->id,
             'title'   => 'write tests',
             'is_done' => false,
         ]);
-
         $this->assertDatabaseHas('tasks',[
             'id'      => $task->id,
             'user_id' => $user->id,
@@ -84,6 +83,23 @@ class TaskModelTest extends TestCase
             'is_done' => false,
         ]);
 
+        //非許可フィールド(NG)— $fillable に無い値は無視されることを確認
+        $task = Task::create([
+            'user_id'=>$user->id,
+            'title'=>'ignore unknown',
+            'is_done' => true,
+            'hacker'  => 'SHOULD_BE_IGNORED', // ← $fillable に無い
+        ])->fresh();
+
+        $this->assertDatabaseHas('tasks', [
+        'id'      => $task->id,
+        'user_id' => $user->id,
+        'title'   => 'ignore unknown',
+        'is_done' => true,
+    ]);
+
+    // モデルにその属性が載ってこないことを確認
+    $this->assertArrayNotHasKey('hacker', $task->getAttributes());
 
     }
 }
