@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\User;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;   // ← 追加
 
@@ -21,6 +22,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
+        /** @var User $user */        // ← ここで User 型だと明示
         $user = Auth::user();
         if (!$user) abort(401);
 
