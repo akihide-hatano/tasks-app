@@ -48,8 +48,7 @@ class TaskModelTest extends TestCase
     }
 
 
-    /** @test */
-    public function fillable_で一括代入できる(): void
+    public function test_fillable_で一括代入できる(): void
     {
         $user = User::factory()->create();
 
