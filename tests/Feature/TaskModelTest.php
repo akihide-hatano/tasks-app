@@ -27,7 +27,7 @@ class TaskModelTest extends TestCase
 
     public function test_is_done_boole():void{
 
-        $task = Task::factory()->create(['is_done'=>'1']);
+        $task = \App\Models\Task::factory()->create(['is_done' => '1']);
 
         $this->assertIsBool($task->is_done);
         $this->assertTrue($task->is_done);
