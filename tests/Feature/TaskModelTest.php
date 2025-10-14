@@ -5,16 +5,23 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Task;
+use App\Models\User;
 
 class TaskModelTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
+    public function test_title_space():void{
+        $user = User::factory()->create();
+
+         // 全角スペースや前後空白を含む入力
+         $task = Task::create([
+                     'user_id' => $user->id,
+            'title'   => '  テ. ス. ト  ',   // 前後空白＋スペース多め
+            'is_done' => '0',                // 文字列でもOK
+        ]);
+
+         $this->assertSame('テ. ス. ト', $task->title);
     }
 }
