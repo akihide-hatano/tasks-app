@@ -16,10 +16,15 @@ class Task extends Model
 
 
     public function title():Attribute{
-        return Attribute::make(
-             set: fn ($v) => mb_convert_kana(trim((string)$v), 's') // 前後空白除去＋スペース正規化
-        );
+    return Attribute::make(
+        set: fn ($v) => preg_replace(
+            '/[  ]+/u',                  // 半角/全角スペースの連続
+            ' ',                          // 半角スペース1個に圧縮
+            mb_convert_kana(trim((string)$v), 's') // 前後trim + 全角→半角
+        )
+    );
     }
+
     public function user():BelongsTo{
         return $this->belongsTo(User::class);
     }
