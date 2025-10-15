@@ -58,4 +58,14 @@ class TaskControllerTest extends TestCase
             'is_done' => false,        // デフォルト false
         ]);
     }
+
+    public function test_store_validation_title_requreid_max():void{
+
+        $me = User::factory()->create();
+         // title なし → 422 相当。Webはリダイレクト+errors。
+        $this->actingAs($me)->from('/tasks/create')
+            ->post('/tasks',[/* no title*/])
+            ->assertRedirect('/tasks/create')
+            ->assertSessionHasErrors(['title']);
+    }
 }
