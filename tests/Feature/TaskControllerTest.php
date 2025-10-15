@@ -45,7 +45,7 @@ class TaskControllerTest extends TestCase
     {
         $me = User::factory()->create();
 
-        $res = $this->actingAs($me)->post('/tasls',[
+        $res = $this->actingAs($me)->post('/tasks',[
             'title'   => '  テ  ス  ト  ',  // 前後空白＋全角スペース
         ]);
 
