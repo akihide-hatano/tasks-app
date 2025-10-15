@@ -13,6 +13,7 @@ class TaskController extends Controller
 {
     public function index()
     {
+        /** @var User $user */
         $user = Auth::user();           // ← 型が User|null と分かる
         if (!$user) abort(401);
 
