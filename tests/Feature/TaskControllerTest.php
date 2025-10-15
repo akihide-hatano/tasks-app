@@ -39,4 +39,23 @@ class TaskControllerTest extends TestCase
             ->assertDontSee('others'); // 他人のは出ない
 
     }
+
+    /* ---------- store ---------- */
+    public function test_store_creates_task_and_normalizes_title(): void
+    {
+        $me = User::factory()->create();
+
+        $res = $this->actingAs($me)->post('/tasls',[
+            'title'   => '  テ  ス  ト  ',  // 前後空白＋全角スペース
+        ]);
+
+        $res->assertRedirect(route('tasks.index'))
+            ->assertSessionHas('status','Task created.');
+
+        $this->assertDatabaseHas('tasks', [
+            'user_id' => $me->id,
+            'title'   => 'テ ス ト',   // ミューテータの正規化が効く
+            'is_done' => false,        // デフォルト false
+        ]);
+    }
 }
