@@ -67,5 +67,17 @@ class TaskControllerTest extends TestCase
             ->post('/tasks',[/* no title*/])
             ->assertRedirect('/tasks/create')
             ->assertSessionHasErrors(['title']);
+
+        //101文字はNG
+        $tooLong= str_repeat('a',101);
+                $this->actingAs($me)->from('/tasks/create')
+                ->post('/tasks', ['title' => $tooLong])
+                ->assertRedirect('/tasks/create')
+                ->assertSessionHasErrors(['title']);
+
+        //100文字はOK
+        $ok = str_repeat('a',100);
+                $this->actingAs($me)->post('/tasks', ['title' => $ok])
+                ->assertRedirect(route('tasks.index'));
     }
 }
