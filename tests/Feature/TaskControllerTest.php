@@ -74,6 +74,10 @@ class TaskControllerTest extends TestCase
                 ->post('/tasks', ['title' => $tooLong])
                 ->assertRedirect('/tasks/create')
                 ->assertSessionHasErrors(['title']);
+        $this->assertDatabaseMissing('tasks',[
+            'user_id' => $me->id,
+            'title'   => null, // or '', 送信してないならこの行は省略でもOK
+        ]);
 
         //100文字はOK
         $ok = str_repeat('a',100);
