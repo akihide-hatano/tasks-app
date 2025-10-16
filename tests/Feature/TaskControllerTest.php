@@ -101,4 +101,28 @@ class TaskControllerTest extends TestCase
         $this->actingAs($me)->get("/tasks/{$others->id}")
             ->assertStatus(403);
     }
+
+    public function test_update_patch_only_set_fields():void{
+
+        $me = User::factory()->create();
+        $task = Task::factory()->for($me)->create([
+            'title' => 'old',
+            'is_done' => false,
+        ]);
+
+        //is_doneだけtrueに、titleは据え置き
+        $res = $this->actingAs($me)->patch("/tasks/{$task->id}", [
+            'title'=>$task->title,
+            'is_done' => true,
+        ]);
+
+        $res->assertRedirect(route('tasks.index'))
+            ->assertSessionHas('status','Task updated.');
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'title' => 'old',
+            'is_done' => true,
+        ]);
+    }
 }
