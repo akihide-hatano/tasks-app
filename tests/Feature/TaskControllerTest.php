@@ -127,4 +127,16 @@ class TaskControllerTest extends TestCase
             'is_done' => true,
         ]);
     }
+
+    public function test_destroy_my_task():void{
+
+        $me = User::factory()->create();
+        $task = Task::factory()->for($me)->create();
+
+        $this->actingAs($me)->delete("/tasks/{$task->id}")
+        ->assertRedirect(route('tasks.index'))
+        ->assertSessionHas('status', 'Task deleted.');
+
+        $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
+    }
 }
