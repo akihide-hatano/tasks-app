@@ -88,7 +88,9 @@ class TaskControllerTest extends TestCase
     /* ---------- show / edit ---------- */
     public function test_show_my_task_is_ok_but_others_is_forbidden(): void{
 
-        [$me,$other] = User::factory()->count(2)->create();
+        $me    = User::factory()->create();   // 1人目
+        $other = User::factory()->create();   // 2人目
+
         $mine = Task::factory()->for($me)->create();
         $others = Task::factory()->for($other)->create();
 
