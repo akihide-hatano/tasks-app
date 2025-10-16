@@ -84,4 +84,16 @@ class TaskControllerTest extends TestCase
                 $this->actingAs($me)->post('/tasks', ['title' => $ok])
                 ->assertRedirect(route('tasks.index'));
     }
+
+    /* ---------- show / edit ---------- */
+    public function test_show_my_task_is_ok_but_others_is_forbidden(): void{
+
+        [$me,$other] = User::factory()->count(2)->create();
+        $mine = Task::factory()->for($me)->create();
+        $others = Task::factory()->for($me)->create();
+
+        //コントローラ実装はabort(403)なので403期待
+        $this->actingAs($me)->get("/tasks/{$others->id}")
+             ->assertStatus(403);
+    }
 }
