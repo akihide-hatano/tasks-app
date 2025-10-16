@@ -90,10 +90,13 @@ class TaskControllerTest extends TestCase
 
         [$me,$other] = User::factory()->count(2)->create();
         $mine = Task::factory()->for($me)->create();
-        $others = Task::factory()->for($me)->create();
+        $others = Task::factory()->for($other)->create();
 
-        //コントローラ実装はabort(403)なので403期待
+        $this->actingAs($me)->get("/tasks/{$mine->id}")
+            ->assertOk()->assertViewIs('tasks.show');
+
+        // コントローラ実装は abort(403) なので 403 を期待
         $this->actingAs($me)->get("/tasks/{$others->id}")
-             ->assertStatus(403);
+            ->assertStatus(403);
     }
 }
