@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Task;
-
+use GuzzleHttp\Promise\Create;
 
 class TaskControllerTest extends TestCase
 {
@@ -173,5 +173,20 @@ class TaskControllerTest extends TestCase
 
         $this->actingAs($me)->get("/tasks/{$others->id}/edit")
                 ->assertStatus(403);
+    }
+
+    public function test_update_validation_error_redirects_back_with_errors(): void
+    {
+        $me = User::factory()->create();
+        $task = Task::factory()->for($me)->create(['title'=>'keep']);
+
+        $this->actingAs($me)
+            ->from("/tasks/{$task->id}/edit")
+            ->patch("/tasks/{$task->id}",['title'=>''])
+            ->assertRedirect("/tasks/{$task->id}/edit")
+            ->assertSessionHasErrors(['title']);
+
+        // 値は変わっていないこと
+        $this->assertSame('keep', $task->fresh()->title);
     }
 }
