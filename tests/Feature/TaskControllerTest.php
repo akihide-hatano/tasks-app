@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Task;
 use GuzzleHttp\Promise\Create;
+use Ramsey\Uuid\Guid\Guid;
 
 class TaskControllerTest extends TestCase
 {
@@ -188,5 +189,17 @@ class TaskControllerTest extends TestCase
 
         // 値は変わっていないこと
         $this->assertSame('keep', $task->fresh()->title);
+    }
+
+    public function test_store_without_is_done_key_defaults_false(): void
+    {
+        $me = User::factory()->create();
+
+        $this->actingAs($me)->post('/tasks',['title'=>'x'])
+                ->assertRedirect(route('tasks.index'));
+
+        $this->assertDatabaseHas('tasks', [
+        'user_id' => $me->id, 'title' => 'x', 'is_done' => false,
+    ]);
     }
 }
