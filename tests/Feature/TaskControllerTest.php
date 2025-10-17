@@ -157,4 +157,21 @@ class TaskControllerTest extends TestCase
         // 件数が変わってない（削除されてない）もチェック
         $this->assertDatabaseCount('tasks',1);
     }
+
+    /** updateは自分はOK */
+    public function test_edit_my_task_is_ok_but_others_us_forbidden()
+    {
+        $me = User::factory()->create();
+        $other = User::factory()->create();
+
+        $mine = Task::factory()->for($me)->create();
+        $others = Task::factory()->for($other)->create();
+
+        $this->actingAs($me)->get("/tasks/{$mine->id}/edit")
+                ->assertOk()
+                ->assertViewIs('tasks.edit');
+
+        $this->actingAs($me)->get("/tasks/{$others->id}/edit")
+                ->assertStatus(403);
+    }
 }
