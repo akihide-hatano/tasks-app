@@ -150,6 +150,11 @@ class TaskControllerTest extends TestCase
         $this->actingAs($me)->delete("/tasks/{$others->id}")
         ->assertStatus(403);
 
-        $this->assertDatabaseHas('tasks', ['id' => $others->id]);
+        $this->assertDatabaseHas('tasks',
+        ['id' => $others->id,
+        'user_id'=>$other->id,
+        ]);
+        // 件数が変わってない（削除されてない）もチェック
+        $this->assertDatabaseCount('tasks',1);
     }
 }
