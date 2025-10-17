@@ -139,4 +139,17 @@ class TaskControllerTest extends TestCase
 
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
+
+    public function test_destory_others_task_is_forbidden():void
+    {
+        //初期設定
+        $me = User::factory()->create();
+        $other = User::factory()->create();
+        $others = Task::factory()->for($other)->create();
+
+        $this->actingAs($me)->delete("/tasks/{$others->id}")
+        ->assertStatus(403);
+
+        $this->assertDatabaseHas('tasks', ['id' => $others->id]);
+    }
 }
