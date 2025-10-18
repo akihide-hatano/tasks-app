@@ -203,7 +203,7 @@ class TaskControllerTest extends TestCase
     ]);
     }
 
-    public function test_index_paginates_onlu_my_tasks():void
+    public function test_index_paginates_only_my_tasks():void
     {
         $me = User::factory()->create();
         Task::factory()->for($me)->count(15)->create();
