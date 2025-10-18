@@ -202,4 +202,13 @@ class TaskControllerTest extends TestCase
         'user_id' => $me->id, 'title' => 'x', 'is_done' => false,
     ]);
     }
+
+    public function test_index_paginates_onlu_my_tasks():void
+    {
+        $me = User::factory()->create();
+        Task::factory()->for($me)->count(15)->create();
+        $this->actingAs($me)->get('/tasks?page=1')
+                ->assertOk()
+                ->assertViewIs('tasks.index');
+    }
 }
